@@ -1,0 +1,69 @@
+services:
+  php-severice1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-severice1-container
+    volumes:
+      - ./src/severice1:/var/www/html
+    environment:
+      - APACHE_SERVER_NAME=severice1.localhost
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    
+  php-severice2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-severice2-container
+    volumes:
+      - ./src/severice2:/var/www/html
+    environment:
+      - APACHE_SERVER_NAME=severice2.localhost
+    ports:
+      - "8082:80"
+    depends_on:
+      - mysql
+ 
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    container_name: frontend-container
+    ports:
+      - "3000:80"  # 本地的 3000 端口映射到容器的 80 端口
+    depends_on:
+      - php-severice1
+      - php-severice2
+
+  mysql:
+    image: mysql:latest
+    container_name: my-mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: P@ssw0rd
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: --default-time-zone='+08:00' 
+    init: true
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: my-phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_ROOT_PASSWORD=P@ssw0rd
+      - APACHE_SERVER_NAME=phpmyadmin.localhost 
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
