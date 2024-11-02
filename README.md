@@ -11,6 +11,6 @@ graph TD
     LaravelAPI --> MySQL[(MySQL 資料庫)]
 ```
 ## 前端架構README.md<br>
-https://github.com/Yang-012/PhpfinalProject/edit/main/src/frontend/README.md
+https://github.com/Yang-012/PhpfinalProject/edit/main/src/frontend
 ## 後端架構README.md<br>
-https://github.com/Yang-012/PhpfinalProject/blob/main/src/severice1/README.md
+https://github.com/Yang-012/PhpfinalProject/blob/main/src/severice1
