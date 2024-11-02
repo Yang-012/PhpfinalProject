@@ -1,4 +1,5 @@
 # 📖EBOOK網站
+
 ## 網站架構
 ```mermaid
 graph TD
@@ -15,13 +16,15 @@ graph TD
     A[首頁 /] --> B[書籍列表 /books]
     B --> C[書籍詳情 /books/:id]
     A --> D[購物車 /cart]
-    A --> E[使用者頁 /user]
-    E --> F[使用者資料 /user/profile]
-    E --> G[訂單頁 /user/orders]
+    A --> E[登入 /login] --> H[(身分驗證)]
+    H --> I[使用者頁 /user]
+    I --> F[使用者資料 /user/profile]
+    I --> G[訂單頁 /user/orders]
+    H --> J[後台管理 /admin] --> K[書籍管理 /admin/books]
+    J --> L[訂單管理 /admin/orders]
+    J --> M[使用者管理 /admin/users]
 ```
 ## 資料庫ER圖--Mysql
-# 資料庫結構
-
 ```mermaid
 erDiagram
     Orders_header {
