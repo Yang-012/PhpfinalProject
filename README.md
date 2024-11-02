@@ -10,20 +10,8 @@ graph TD
     ReactApp -->|REST API | LaravelAPI[Laravel 後端]
     LaravelAPI --> MySQL[(MySQL 資料庫)]
 ```
-## 前端路由設定--React.js
-```mermaid
-graph TD
-    A[首頁 /] --> B[書籍列表 /books]
-    B --> C[書籍詳情 /books/:id]
-    A --> D[購物車 /cart]
-    A --> E[登入 /login] --> H[(身分驗證)]
-    H --> I[使用者頁 /user]
-    I --> F[使用者資料 /user/profile]
-    I --> G[訂單頁 /user/orders]
-    H --> J[後台管理 /admin] --> K[書籍管理 /admin/books]
-    J --> L[訂單管理 /admin/orders]
-    J --> M[使用者管理 /admin/users]
-```
+前端架構README.md<br>
+https://github.com/Yang-012/PhpfinalProject/edit/main/src/frontend/README.md
 ## 資料庫ER圖--Mysql
 ```mermaid
 erDiagram
