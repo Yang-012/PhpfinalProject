@@ -1,8 +1,29 @@
-# React + Vite
+# EBOOK前端架構
+## 前端路由設定--React.js
+```mermaid
+graph TD
+    A[首頁 /] --> B[書籍列表 /books]
+    B --> C[書籍詳情 /books/:id]
+    A --> D[購物車 /cart]
+    A --> E[登入 /login] --> H[(身分驗證)]
+    H --> I[使用者頁 /user]
+    I --> F[使用者資料 /user/profile]
+    I --> G[訂單頁 /user/orders]
+    H --> J[後台管理 /admin] --> K[書籍管理 /admin/books]
+    J --> L[訂單管理 /admin/orders]
+    J --> M[使用者管理 /admin/users]
+```
+### 功能確認清單
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+1. **檢索功能**
+   - [ ] 搜索欄可以讓用戶輸入書名、作者、ISBN 等進行搜索
+   - [ ] 搜索結果應顯示相關的書籍，並提供快速連結到詳細頁面
+   - [ ] 支援篩選選項（例如書籍類型、價格範圍等）
+   - [ ] 支援排序功能（如按銷量、評分、價格等）
 
-Currently, two official plugins are available:
+2. **登入功能**
+   - [ ] 顯示「登入」按鈕在首頁右上角
+   - [ ] 點擊登入按鈕後，彈出登入表單（或跳轉至登入頁面）
+   - [ ] 成功登入後，顯示用戶名並提供下拉選單（包含帳戶設定、訂單紀錄、登出選項）
+   - [ ] 支援第三方登入（例如 Google、Facebook）
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
