@@ -1,4 +1,14 @@
-# 📖EBOOK網站架構
+# 📖EBOOK網站
+## 網站架構
+```mermaid
+graph TD
+    Buyer[買家] --> ReactApp[React 前端]
+    Seller[賣家] --> ReactApp
+    Admin[總管理者] --> ReactApp
+
+    ReactApp -->|REST API | LaravelAPI[Laravel 後端]
+    LaravelAPI --> MySQL[(MySQL 資料庫)]
+```
 ## 前端路由設定--React.js
 ```mermaid
 graph TD
@@ -10,56 +20,68 @@ graph TD
     E --> G[訂單頁 /user/orders]
 ```
 ## 資料庫ER圖--Mysql
+# 資料庫結構
+
 ```mermaid
 erDiagram
     Orders_header {
         INT order_id PK
-        INT user_id FK
-        INT order_discount
-        TIMESTAMP order_created_at
-        VARCHAR order_status
-        VARCHAR order_payment
-        VARCHAR order_shipping
+        INT User_id FK "ref: Users.User_id"
+        INT order_discount "default: 0"
+        TIMESTAMP order_created_at "default: CURRENT_TIMESTAMP"
+        VARCHAR order_status "ENUM: pending, paid, shipped, cancelled"
+        VARCHAR order_payment "ENUM: credit_card, paypal, cash_on_delivery, bank_transfer"
+        VARCHAR order_shipping "ENUM: home_delivery, store_pickup, locker_pickup"
     }
-Orders_Details {
+    Orders_Details {
         INT order_item_id PK
-        INT order_id FK
-        INT product_id FK
-        INT order_item_quantity
+        INT order_id FK "ref: Orders_header.order_id"
+        INT book_id FK "ref: Book.book_id"
+        INT order_item_quantity "default: 1"
         INT order_item_price
     }
-Products {
-        INT product_id PK
-        STRING product_name
-        STRING product_summary
-        INT product_price
-        INT product_quantity
-        STRING product_img
-        DATETIME product_updated_at
+    Book {
+        INT book_id PK
+        VARCHAR title
+        VARCHAR author
+        VARCHAR publisher
+        DATE publish_date
+        VARCHAR category
+        INT price
+        INT quantity
+        VARCHAR language
+        VARCHAR isbn
+        VARCHAR img
+        TEXT summary
+        TIMESTAMP updated_at "default: CURRENT_TIMESTAMP"
     }
-Users {
-        INT user_id PK
-        STRING user_name
-        STRING user_email UNIQUE
-        STRING user_address
-    }
-ShippingCarts {
+    ShippingCarts {
         INT cart_id PK
-        STRING session_ID UNIQUE
-        INT user_id UNIQUE
-        DATETIME cart_updated_at
+        VARCHAR session_ID UNIQUE
+        INT user_id UNIQUE "ref: Users.User_id"
+        TIMESTAMP cart_updated_at "default: CURRENT_TIMESTAMP"
     }
     ShippingCarts_Products {
-        INT cart_id FK
-        INT product_id FK
-        INT product_quantity
+        INT cart_id FK "ref: ShippingCarts.cart_id"
+        INT book_id FK "ref: Book.book_id"
+        INT product_quantity "default: 1"
     }
+    Users {
+        INT User_id PK
+        VARCHAR User_name
+        VARCHAR User_email "UNIQUE"
+        VARCHAR User_address
+        VARCHAR User_password_hash
+        CHAR User_phoneNumber
+        TIMESTAMP User_created_at "default: CURRENT_TIMESTAMP"
+    }
+
     Users ||--o{ Orders_header : "has"
     Orders_header ||--|{ Orders_Details : "contains"
-    Products ||--o{ Orders_Details : "ordered_in"
+    Book ||--o{ Orders_Details : "ordered_in"
     Users ||--o{ ShippingCarts : "owns"
     ShippingCarts ||--o{ ShippingCarts_Products : "contains"
-    Products ||--o{ ShippingCarts_Products : "in_cart"
+    Book ||--o{ ShippingCarts_Products : "in_cart"
 ```
 ## 後端API 總覽--PHP-Laravel
 
