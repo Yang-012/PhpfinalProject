@@ -12,39 +12,54 @@ graph TD
 ## 資料庫ER圖--Mysql
 ```mermaid
 erDiagram
-    USER {
-        int id PK
-        string name
-        string email
-        string password
+    Orders_header {
+        INT order_id PK
+        INT user_id FK
+        INT order_discount
+        TIMESTAMP order_created_at
+        VARCHAR order_status
+        VARCHAR order_payment
+        VARCHAR order_shipping
     }
-    
-    BOOK {
-        int id PK
-        string title
-        string author
-        float price
-        int stock
+Orders_Details {
+        INT order_item_id PK
+        INT order_id FK
+        INT product_id FK
+        INT order_item_quantity
+        INT order_item_price
     }
-    
-    ORDER {
-        int id PK
-        date order_date
-        float total_amount
-        int user_id FK
+Products {
+        INT product_id PK
+        STRING product_name
+        STRING product_summary
+        INT product_price
+        INT product_quantity
+        STRING product_img
+        DATETIME product_updated_at
     }
-
-    ORDERITEM {
-        int id PK
-        int order_id FK
-        int book_id FK
-        int quantity
-        float price
+Users {
+        INT user_id PK
+        STRING user_name
+        STRING user_email UNIQUE
+        STRING user_address
     }
-
-    USER ||--o{ ORDER : places
-    ORDER ||--|{ ORDERITEM : contains
-    BOOK ||--o{ ORDERITEM : ordered_in
+ShippingCarts {
+        INT cart_id PK
+        STRING session_ID UNIQUE
+        INT user_id UNIQUE
+        DATETIME cart_updated_at
+    }
+    ShippingCarts_Products {
+        INT cart_id FK
+        INT product_id FK
+        INT product_quantity
+    }
+    Users ||--o{ Orders_header : "has"
+    Orders_header ||--|{ Orders_Details : "contains"
+    Products ||--o{ Orders_Details : "ordered_in"
+    Users ||--o{ ShippingCarts : "owns"
+    ShippingCarts ||--o{ ShippingCarts_Products : "contains"
+    Products ||--o{ ShippingCarts_Products : "in_cart"
 ```
 ## 後端API 總覽--PHP-Laravel
 
