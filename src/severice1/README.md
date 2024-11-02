@@ -1,64 +1,84 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## 後端架構設計--PHP-Laravel--Mysql
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Mysql資料庫ER圖
+```mermaid
+erDiagram
+    Orders_header {
+        INT order_id PK
+        INT User_id FK "ref: Users.User_id"
+        INT order_discount "default: 0"
+        TIMESTAMP order_created_at "default: CURRENT_TIMESTAMP"
+        VARCHAR order_status "ENUM: pending, paid, shipped, cancelled"
+        VARCHAR order_payment "ENUM: credit_card, paypal, cash_on_delivery, bank_transfer"
+        VARCHAR order_shipping "ENUM: home_delivery, store_pickup, locker_pickup"
+    }
+    Orders_Details {
+        INT order_item_id PK
+        INT order_id FK "ref: Orders_header.order_id"
+        INT book_id FK "ref: Book.book_id"
+        INT order_item_quantity "default: 1"
+        INT order_item_price
+    }
+    Book {
+        INT book_id PK
+        VARCHAR title
+        VARCHAR author
+        VARCHAR publisher
+        DATE publish_date
+        VARCHAR category
+        INT price
+        INT quantity
+        VARCHAR language
+        VARCHAR isbn
+        VARCHAR img
+        TEXT summary
+        TIMESTAMP updated_at "default: CURRENT_TIMESTAMP"
+    }
+    ShippingCarts {
+        INT cart_id PK
+        VARCHAR session_ID UNIQUE
+        INT user_id UNIQUE "ref: Users.User_id"
+        TIMESTAMP cart_updated_at "default: CURRENT_TIMESTAMP"
+    }
+    ShippingCarts_Products {
+        INT cart_id FK "ref: ShippingCarts.cart_id"
+        INT book_id FK "ref: Book.book_id"
+        INT product_quantity "default: 1"
+    }
+    Users {
+        INT User_id PK
+        VARCHAR User_name
+        VARCHAR User_email "UNIQUE"
+        VARCHAR User_address
+        VARCHAR User_password_hash
+        CHAR User_phoneNumber
+        TIMESTAMP User_created_at "default: CURRENT_TIMESTAMP"
+    }
 
-## About Laravel
+    Users ||--o{ Orders_header : "has"
+    Orders_header ||--|{ Orders_Details : "contains"
+    Book ||--o{ Orders_Details : "ordered_in"
+    Users ||--o{ ShippingCarts : "owns"
+    ShippingCarts ||--o{ ShippingCarts_Products : "contains"
+    Book ||--o{ ShippingCarts_Products : "in_cart"
+```
+## 後端API 總覽
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 用戶 API
+| HTTP 方法 | 路徑            | 描述             |
+|-----------|-----------------|------------------|
+| GET       | /api/users      | 獲取所有用戶     |
+| GET       | /api/users/:id  | 獲取特定用戶資料 |
+| POST      | /api/users      | 新增用戶         |
+| PUT       | /api/users/:id  | 更新用戶資料     |
+| DELETE    | /api/users/:id  | 刪除用戶         |
+### 書籍 API
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| HTTP 方法 | 路徑            | 描述             |
+|-----------|-----------------|------------------|
+| GET       | /api/books      | 獲取所有書籍     |
+| GET       | /api/books/:id  | 獲取特定書籍詳情 |
+| POST      | /api/books      | 新增書籍         |
+| PUT       | /api/books/:id  | 更新書籍資訊     |
+| DELETE    | /api/books/:id  | 刪除書籍         |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
