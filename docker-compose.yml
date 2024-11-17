@@ -1,42 +1,31 @@
 services:
-  php-severice1:
+  php-backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: php-severice1-container
+    container_name: php-backend-container
     volumes:
-      - ./src/severice1:/var/www/html
+      - ./src/backend:/var/www/html
     environment:
-      - APACHE_SERVER_NAME=severice1.localhost
+      - APACHE_SERVER_NAME=backend.localhost
     ports:
       - "8081:80"
     depends_on:
       - mysql
-    
-  php-severice2:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: php-severice2-container
-    volumes:
-      - ./src/severice2:/var/www/html
-    environment:
-      - APACHE_SERVER_NAME=severice2.localhost
-    ports:
-      - "8082:80"
-    depends_on:
-      - mysql
- 
+    networks:
+      - laravel_network
+
   frontend:
     build:
       context: ./src/frontend
       dockerfile: Dockerfile
     container_name: frontend-container
     ports:
-      - "3000:80"  # 本地的 3000 端口映射到容器的 80 端口
+      - "3000:80" # 本地的 3000 端口映射到容器的 80 端口
     depends_on:
-      - php-severice1
-      - php-severice2
+      - php-backend
+    networks:
+      - laravel_network
 
   mysql:
     image: mysql:latest
@@ -50,8 +39,10 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-    command: --default-time-zone='+08:00' 
+    command: --default-time-zone='+08:00'
     init: true
+    networks:
+      - laravel_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -59,11 +50,17 @@ services:
     environment:
       - PMA_HOST=mysql
       - MYSQL_ROOT_PASSWORD=P@ssw0rd
-      - APACHE_SERVER_NAME=phpmyadmin.localhost 
+      - APACHE_SERVER_NAME=phpmyadmin.localhost
     ports:
       - "8080:80"
     depends_on:
       - mysql
+    networks:
+      - laravel_network
 
 volumes:
   mysql-data:
+
+networks:
+  laravel_network:
+    driver: bridge
